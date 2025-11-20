@@ -1,77 +1,249 @@
 
 
 #include "ScalarConverter.hpp"
+#include "cstring"
+#include "iostream"
+#include <string>
+#include <vector>
+#include <sstream>
 
-
-int CharConv(char * string)
+typedef struct  s_helper
 {
+    int sing         ;
+    int index_sing   ;
+    int fflag        ;
+    int index_fflag  ;
+    int fdouble      ;
+    int index_fdouble;
+}               t_helper;
 
+std::string split(std::string str, char delimiter)
+{   
+    std::string reslt;
+    size_t start = 0;
+
+    size_t end = str.find(delimiter);
+    reslt = str.substr(start, end - start);
+    return reslt;
+}
+
+int CharConv(t_helper helper, char * string)
+{
+    int holder;
+    if (!helper.fdouble && !helper.fflag)
+        holder = (char)atoi(string);
+    else
+    {
+        if (helper.fflag)
+        {
+            string[strlen(string) - 1] = '\0';
+            holder = atoi(string);
+        }
+        else if (helper.fdouble)
+        {
+            std::string helper(string);
+            helper = split(helper, '.');
+            holder = atoi(helper.c_str());
+        }
+    }
+    // check overflow right here in the int part
+    long overflowcheck = static_cast<long>(atol(string));
+    // check overflow right here in the doule part
+
+    std::cout << "char: '";
+    if (isprint(holder))
+        putchar(holder);
+    else
+    {
+        std::cout << "Non displayable";
+        return 1;
+    }
+    std::cout << "'"<< std::endl;
+    return (1);
+}
+
+
+int IntConv(t_helper helper, char * string)
+{
+    int holder;
+    if (!helper.fdouble && !helper.fflag)
+        holder = atoi(string);
+    else
+    {
+        if (helper.fflag)
+        {
+            string[strlen(string) - 1] = '\0';
+            holder = atoi(string);
+        }
+        else if (helper.fdouble)
+        {
+            std::string helper(string);
+            helper = split(helper, '.');
+            holder = atoi(helper.c_str());
+        }
+    }
+    std::cout << "int: " << holder<< std::endl;
+    return (1);
+}
+
+int FloatConv(t_helper helper, char * string)
+{
+    int holder;
+    if (!helper.fdouble && !helper.fflag)
+    {
+        holder = atoi(string);
+        std::cout << "float: " << holder ;
+        std::cout << ".0f";
+        std::cout << std::endl;
+        return 1;
+    }
+    else
+    {
+        if (helper.fflag)
+        {
+            string[strlen(string) - 1] = '\0';
+            holder = atoi(string);
+        }
+        else if (helper.fdouble)
+        {
+            std::string helper(string);
+            helper = split(helper, '.');
+            holder = atoi(helper.c_str());
+        }
+    }
+    return (1);
+
+}
+
+int DoubleConv(t_helper helper, char * string)
+{
+    int holder;
+    if (!helper.fdouble && !helper.fflag)
+    {
+        holder = atoi(string);
+        std::cout << "double: " << holder ;
+        std::cout << ".0";
+        std::cout << std::endl;
+        return 1;
+    }
 
     return (1);
 }
 
-int IntConv(char * string)
+t_helper typeTaker(char *copy)
 {
+    t_helper taker;
+    int len;
+    int index;
+    
+    index               = 0;
+    taker.sing          = 0;
+    taker.index_sing    = 0;
+    taker.fflag         = 0;
+    taker.index_fflag   = 0;
+    taker.fdouble       = 0;
+    taker.index_fdouble = 0;
+    len                 = strlen(copy);
 
+    if (copy[index] == '-' || copy[index] == '+' )
+    {
+        // negative values is passed
+        taker.index_sing = index;
+        taker.sing = 1;
+        index++;
+    }
 
-    return (1);
+    while (copy[index])
+    {
+        if (isdigit(copy[index]))
+            index++;
+        else if (copy[index] == 'f')
+        {
+            taker.fflag += 1;
+            taker.index_fflag = index;
+            index++;
+        }
+        else if(copy[index] == '.')
+        {
+            taker.index_fdouble = index;
+            taker.fdouble += 1;
+            index++;
+        }
+        else
+        {
+            std::cerr << "syntax error exit error(15)" << std::endl;
+            exit(15);
+        }
+    }
+    // the f position 
+    if (taker.fflag)
+    {
+        if (taker.index_fflag != len - 1 || taker.fflag > 1)
+        {
+            std::cout <<"   "<<taker.index_fflag << "  " << len << "  " << index << " "<<  taker.fflag <<" 'f' position isn't incorrrect" << std::endl;
+            exit(15);
+        }
+    }
+    // the point position 
+    if (taker.fdouble)
+    {
+        if(taker.fdouble && taker.sing == 1)
+        {
+            std::cout <<"   "<<taker.index_fflag << "  " << len << "  " << index << " "<<  taker.fflag <<"  '.' - position isn't incorrrect" << std::endl;
+            exit(15);
+        }
+        if (taker.index_fdouble == 0 ||taker.index_fdouble == len - 1 || taker.fdouble > 1)
+        {
+            std::cout <<"   "<<taker.index_fflag << "  " << len << "  " << index << " "<<  taker.fflag <<"  '.' position isn't incorrrect" << std::endl;
+            exit(15);
+        }
+    }
+    std::cout << "string is valid ----->: " << copy << std::endl;
+    return (taker);
 }
 
-int FloatConv(char * string)
-{
 
-
-    return (1);
-}
-
-int DoubleConv(char * string)
-{
-
-
-    return (1);
-}
-
-void  convert(const char* str)
+int  convert(const char* str)
 {
     if (!str)
         std::cerr << "you can't pss in empty string" << std::endl;
-    for (int i = 0;str[i]; i++)
-    {
-        if (str[i] && iscntrl(str[i]))
-        {
-            std::cerr << "can't pass in Non printable characters" << std::endl;
-            return ;
-        }
-    }
 
-    // char *copy = new char (strlen(str) + 1);
     char* copy = strdup(str);
+    
+    // need to hard code the inf nan ...
+
+    // get the type of input 
+    t_helper parced = typeTaker(copy);
+    
     // first convert to char 
-    if (CharConv(copy) == 0)
+    if (CharConv(parced, copy) == 0)
     {
         std::cerr << "char coverter error can't take this action" << std::endl;
     }
     // sec convert to int
-    if (IntConv(copy) == 0)
+    if (IntConv(parced, copy) == 0)
     {
         std::cerr << "int coverter error can't take this action" << std::endl;
     }
     // more convert to float 
-    if (FloatConv(copy) == 0)
+    if (FloatConv(parced, copy) == 0)
     {
         std::cerr << "float coverter error can't take this action" << std::endl;
     }
     // last convert to double 
-    if (DoubleConv(copy) == 0)
+    if (DoubleConv(parced, copy) == 0)
     {
         std::cerr << "double coverter error can't take this action" << std::endl;
     }
-
-
-
-
+    return 0;
 }
 
-
+int main()
+{
+    // char is good need just to handel the over/under flow
+    //  handel the float and doulbe and   the edg cases nan inf
+    convert("123"); 
+    return 0;
+}
 
 
