@@ -15,12 +15,12 @@ private:
 
 public:
     Serializer();
-    Serializer operator=(Serializer const &other);
+    Serializer &operator=(Serializer const &other);
     Serializer(Serializer const &other);
     ~Serializer();
 
-    static uintptr_t serialize(Data* ptr);
-    static Data* deserialize(uintptr_t raw);
+    uintptr_t serialize(Data* ptr);
+    Data* deserialize(uintptr_t raw);
 
 
 };

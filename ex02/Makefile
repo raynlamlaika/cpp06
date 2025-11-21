@@ -1,13 +1,14 @@
 NAME = Casting
 
-SRC =   ScalarConverter.cpp
+SRC =   A.cpp  Base.cpp  B.cpp  C.cpp main.cpp
 
 OBJ = $(SRC:.cpp=.o)
 
 CPP = c++
+
 CFLAGS = -Wall -Werror -Wextra -std=c++98
 
-HEADER = ScalarConverter.hpp 
+HEADER = A.hpp  Base.hpp  B.hpp  C.hpp
 
 all: $(NAME)
 

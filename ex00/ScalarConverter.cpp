@@ -6,6 +6,38 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <cstdlib>
+
+
+
+
+ScalarConverter::ScalarConverter()
+{
+
+}
+ScalarConverter &ScalarConverter::operator=(const ScalarConverter &other)
+{
+    (void)other;
+    return(*this);
+}
+ScalarConverter::~ScalarConverter()
+{
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 typedef struct  s_helper
 {
@@ -47,15 +79,20 @@ int CharConv(t_helper helper, char * string)
         }
     }
     // check overflow right here in the int part
-    long overflowcheck = static_cast<long>(atol(string));
+    long overflowcheck = atol(string);
+    if (overflowcheck > 255 || overflowcheck < -255)
+    {
+        std::cout << "char: Non displayable" << std::endl;
+        return 1;
+    }
     // check overflow right here in the doule part
 
     std::cout << "char: '";
     if (isprint(holder))
-        putchar(holder);
+        std::cout << (char)holder; //check
     else
     {
-        std::cout << "Non displayable";
+        std::cout << "char: Non displayable" << std::endl;
         return 1;
     }
     std::cout << "'"<< std::endl;
@@ -67,7 +104,8 @@ int IntConv(t_helper helper, char * string)
 {
     int holder;
     if (!helper.fdouble && !helper.fflag)
-        holder = atoi(string);
+        long holder = atol(string);
+
     else
     {
         if (helper.fflag)
@@ -75,57 +113,70 @@ int IntConv(t_helper helper, char * string)
             string[strlen(string) - 1] = '\0';
             holder = atoi(string);
         }
-        else if (helper.fdouble)
+        if (helper.fdouble)
         {
             std::string helper(string);
             helper = split(helper, '.');
             holder = atoi(helper.c_str());
         }
     }
-    std::cout << "int: " << holder<< std::endl;
+    std::cout << "int: " << holder << std::endl;
     return (1);
 }
 
 int FloatConv(t_helper helper, char * string)
 {
-    int holder;
-    if (!helper.fdouble && !helper.fflag)
-    {
-        holder = atoi(string);
-        std::cout << "float: " << holder ;
-        std::cout << ".0f";
-        std::cout << std::endl;
-        return 1;
-    }
-    else
-    {
-        if (helper.fflag)
-        {
-            string[strlen(string) - 1] = '\0';
-            holder = atoi(string);
-        }
-        else if (helper.fdouble)
-        {
-            std::string helper(string);
-            helper = split(helper, '.');
-            holder = atoi(helper.c_str());
-        }
-    }
+    (void)helper;
+    float holder;
+    holder = std::strtof(string, NULL);
+    std::cout << "float: " << holder ;
+    std::cout << "f";
+    std::cout << std::endl;
+    // if (!helper.fdouble && !helper.fflag)
+    // {
+    //     holder = atof(string);
+    //     std::cout << "float: " << holder ;
+    //     std::cout << ".0f";
+    //     std::cout << std::endl;
+    //     return 1;
+    // }
+    // else
+    // {
+    //     if (helper.fflag)
+    //     {
+    //         holder = atof(string);
+    //         std::cout << "float: " << holder ;
+    //         // std::cout << ".0f";
+    //         std::cout << std::endl;
+    //         return 1;
+    //     }
+    //     else if (helper.fdouble)
+    //     {
+    //         std::string helper(string);
+    //         helper = split(helper, '.');
+    //         holder = atoi(helper.c_str());
+    //     }
+    // }
     return (1);
 
 }
 
 int DoubleConv(t_helper helper, char * string)
 {
-    int holder;
-    if (!helper.fdouble && !helper.fflag)
-    {
-        holder = atoi(string);
-        std::cout << "double: " << holder ;
-        std::cout << ".0";
-        std::cout << std::endl;
-        return 1;
-    }
+    (void)helper;
+    long double holder;
+    holder  = std::strtold(string, NULL);
+    std::cout << "double: " << holder ;
+    // std::cout << ".0";
+    std::cout << std::endl;
+    // if (!helper.fdouble && !helper.fflag)
+    // {
+    //     holder = atoi(string);
+    //     std::cout << "double: " << holder ;
+    //     std::cout << ".0";
+    //     std::cout << std::endl;
+    //     return 1;
+    // }
 
     return (1);
 }
@@ -242,7 +293,7 @@ int main()
 {
     // char is good need just to handel the over/under flow
     //  handel the float and doulbe and   the edg cases nan inf
-    convert("123"); 
+    convert("494444444444444444.444444444444443"); 
     return 0;
 }
 
