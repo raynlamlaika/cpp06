@@ -1,6 +1,6 @@
 NAME = Serializer
 
-SRC =   Serializer.cpp
+SRC =   Serializer.cpp main.cpp
 
 OBJ = $(SRC:.cpp=.o)
 
