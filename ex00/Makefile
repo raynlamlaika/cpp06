@@ -1,6 +1,6 @@
 NAME = Casting
 
-SRC =   ScalarConverter.cpp
+SRC =   ScalarConverter.cpp main.cpp
 
 OBJ = $(SRC:.cpp=.o)
 

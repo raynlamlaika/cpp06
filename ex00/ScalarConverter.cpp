@@ -28,17 +28,6 @@ ScalarConverter::~ScalarConverter()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 typedef struct  s_helper
 {
     int sing         ;
@@ -63,23 +52,23 @@ int CharConv(t_helper helper, char * string)
 {
     int holder;
     if (!helper.fdouble && !helper.fflag)
-        holder = (char)atoi(string);
+        holder = static_cast<int>(std::strtold(string, NULL));
     else
     {
         if (helper.fflag)
         {
             string[strlen(string) - 1] = '\0';
-            holder = atoi(string);
+            holder = static_cast<int>(std::strtold(string, NULL));
         }
         else if (helper.fdouble)
         {
             std::string helper(string);
             helper = split(helper, '.');
-            holder = atoi(helper.c_str());
+            holder = static_cast<int>(std::strtold(helper.c_str(), NULL));
         }
     }
     // check overflow right here in the int part
-    long overflowcheck = atol(string);
+    long overflowcheck = static_cast<long>(std::strtold(string, NULL));
     if (overflowcheck > 255 || overflowcheck < -255)
     {
         std::cout << "char: Non displayable" << std::endl;
@@ -104,20 +93,19 @@ int IntConv(t_helper helper, char * string)
 {
     int holder;
     if (!helper.fdouble && !helper.fflag)
-        long holder = atol(string);
-
+        holder = static_cast<int>(std::strtold(string, NULL));
     else
     {
         if (helper.fflag)
         {
             string[strlen(string) - 1] = '\0';
-            holder = atoi(string);
+            holder = static_cast<int>(std::strtold(string, NULL));
         }
         if (helper.fdouble)
         {
             std::string helper(string);
             helper = split(helper, '.');
-            holder = atoi(helper.c_str());
+            holder = static_cast<int>(std::strtold(helper.c_str(), NULL));;
         }
     }
     std::cout << "int: " << holder << std::endl;
@@ -129,34 +117,10 @@ int FloatConv(t_helper helper, char * string)
     (void)helper;
     float holder;
     holder = std::strtof(string, NULL);
+    //check overflow
     std::cout << "float: " << holder ;
     std::cout << "f";
     std::cout << std::endl;
-    // if (!helper.fdouble && !helper.fflag)
-    // {
-    //     holder = atof(string);
-    //     std::cout << "float: " << holder ;
-    //     std::cout << ".0f";
-    //     std::cout << std::endl;
-    //     return 1;
-    // }
-    // else
-    // {
-    //     if (helper.fflag)
-    //     {
-    //         holder = atof(string);
-    //         std::cout << "float: " << holder ;
-    //         // std::cout << ".0f";
-    //         std::cout << std::endl;
-    //         return 1;
-    //     }
-    //     else if (helper.fdouble)
-    //     {
-    //         std::string helper(string);
-    //         helper = split(helper, '.');
-    //         holder = atoi(helper.c_str());
-    //     }
-    // }
     return (1);
 
 }
@@ -166,18 +130,9 @@ int DoubleConv(t_helper helper, char * string)
     (void)helper;
     long double holder;
     holder  = std::strtold(string, NULL);
+    // check over flow
     std::cout << "double: " << holder ;
-    // std::cout << ".0";
     std::cout << std::endl;
-    // if (!helper.fdouble && !helper.fflag)
-    // {
-    //     holder = atoi(string);
-    //     std::cout << "double: " << holder ;
-    //     std::cout << ".0";
-    //     std::cout << std::endl;
-    //     return 1;
-    // }
-
     return (1);
 }
 
@@ -185,10 +140,8 @@ t_helper typeTaker(char *copy)
 {
     t_helper taker;
     int len;
-    int index;
-    
-    index               = 0;
-    taker.sing          = 0;
+    int index = 0;
+
     taker.index_sing    = 0;
     taker.fflag         = 0;
     taker.index_fflag   = 0;
@@ -196,18 +149,19 @@ t_helper typeTaker(char *copy)
     taker.index_fdouble = 0;
     len                 = strlen(copy);
 
-    if (copy[index] == '-' || copy[index] == '+' )
-    {
-        // negative values is passed
-        taker.index_sing = index;
-        taker.sing = 1;
-        index++;
-    }
-
     while (copy[index])
     {
         if (isdigit(copy[index]))
             index++;
+        else if (copy[index] == '-' || copy[index] == '+')
+        {
+            index++;
+            if (!isdigit(copy[index]))
+            {
+                std::cerr << "syntax error exit error(15)" << std::endl;
+                exit(14);
+            }
+        }
         else if (copy[index] == 'f')
         {
             taker.fflag += 1;
@@ -219,6 +173,11 @@ t_helper typeTaker(char *copy)
             taker.index_fdouble = index;
             taker.fdouble += 1;
             index++;
+            if (!isdigit(copy[index]))
+            {
+                std::cerr << "syntax error exit error(14)" << std::endl;
+                exit(14);
+            }
         }
         else
         {
@@ -240,12 +199,12 @@ t_helper typeTaker(char *copy)
     {
         if(taker.fdouble && taker.sing == 1)
         {
-            std::cout <<"   "<<taker.index_fflag << "  " << len << "  " << index << " "<<  taker.fflag <<"  '.' - position isn't incorrrect" << std::endl;
+            std::cout<<"  the index fflag"<< taker.index_fflag << " the len: " << len << " the index " << index << "  '.' - position isn't incorrrect" << std::endl;
             exit(15);
         }
         if (taker.index_fdouble == 0 ||taker.index_fdouble == len - 1 || taker.fdouble > 1)
         {
-            std::cout <<"   "<<taker.index_fflag << "  " << len << "  " << index << " "<<  taker.fflag <<"  '.' position isn't incorrrect" << std::endl;
+            std::cout <<"  the index fflag"<< taker.index_fflag << " the len: " << len << " the index " << index << " th flag is "<<  taker.fflag <<"  '.' position isn't incorrrect" << std::endl;
             exit(15);
         }
     }
@@ -254,7 +213,7 @@ t_helper typeTaker(char *copy)
 }
 
 
-int  convert(const char* str)
+int  ScalarConverter::convert(const char* str)
 {
     if (!str)
         std::cerr << "you can't pss in empty string" << std::endl;
@@ -289,12 +248,9 @@ int  convert(const char* str)
     return 0;
 }
 
-int main()
-{
-    // char is good need just to handel the over/under flow
-    //  handel the float and doulbe and   the edg cases nan inf
-    convert("494444444444444444.444444444444443"); 
-    return 0;
-}
+// int main()
+// {
+//     convert("-139.f");
+// }
 
 
