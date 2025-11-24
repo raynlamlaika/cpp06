@@ -114,25 +114,63 @@ int IntConv(t_helper helper, char * string)
 
 int FloatConv(t_helper helper, char * string)
 {
-    (void)helper;
-    float holder;
-    holder = std::strtof(string, NULL);
-    //check overflow
-    std::cout << "float: " << holder ;
-    std::cout << "f";
-    std::cout << std::endl;
+    if (!helper.fflag && !helper.fdouble)
+    {
+        std::cout << "float: " << string ;
+        std::cout << ".0f";
+        std::cout << std::endl;
+        return 1;
+    }
+    if (helper.fflag || helper.fdouble)
+    {
+        std::cout << "float: "<< string ;
+        if (!helper.fdouble)
+        {
+            std::cout << ".0";
+        }
+        std::cout << "f";
+        std::cout << std::endl;
+        return 1;
+    }
+    // std::cout << "float: " << holder ;
+    // std::cout << "f";
+    // std::cout << std::endl;
     return (1);
-
 }
 
 int DoubleConv(t_helper helper, char * string)
 {
-    (void)helper;
-    long double holder;
-    holder  = std::strtold(string, NULL);
-    // check over flow
-    std::cout << "double: " << holder ;
-    std::cout << std::endl;
+    // (void)helper;
+    // long double holder;
+    // holder  = std::strtold(string, NULL);
+    // // check over flow
+    // std::cout << "double: " << holder ;
+    // std::cout << std::endl;
+    if (helper.fflag)
+    {
+        string[helper.index_fflag] = '\0';
+    }
+    if (!helper.fdouble)
+    {
+        std::cout << "double: " << string ;
+        std::cout << ".0";
+        std::cout << std::endl;
+        return 1;
+    }
+    if (helper.fdouble)
+    {
+        std::cout << "double: " << string ;
+        if (!helper.fdouble)
+        {
+            std::cout << ".0";
+        }
+        std::cout << std::endl;
+        return 1;
+    }
+    // std::cout << "float: " << holder ;
+    // std::cout << "f";
+    // std::cout << std::endl;
+    return (1);
     return (1);
 }
 
