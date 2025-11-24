@@ -11,29 +11,48 @@ Base* generate(void)
     std::srand(time(NULL));
     const int RandomValue = std::rand() % 100;
     if (RandomValue < 35)
-    {
-        // creat A
-        return (new A()); // hmmm what is the type of cast nedd here
-    }
+        return (new A());
     else if (RandomValue < 70)
-    {
-        // creat B
         return (new B());
-    }
-    else if (RandomValue < 100)
-    {
-        // creat C
+    else// RandomValue < 100
         return (new C());
-    }
 }
 void identify(Base* p)
 {
-
+    if (dynamic_cast<A*>(p))
+        std::cout << "the type of pointer is from the class A" << std::endl;
+    else if (dynamic_cast<B*>(p))
+        std::cout << "the type of pointer is from the class B" << std::endl;
+    else if (dynamic_cast<C*>(p))
+        std::cout << "the type of pointer is from the class C" << std::endl;
 }
 
 void identify(Base& p)
 {
-
+    try
+    {
+        Base &ptr = dynamic_cast<A&>(p);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    try
+    {
+        Base &ptr =dynamic_cast<B&>(p);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    try
+    {
+        Base &ptr = dynamic_cast<C&>(p);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
 }
 
 
