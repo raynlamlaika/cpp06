@@ -76,9 +76,11 @@ int CharConv(t_helper helper, char * string)
     }
     // check overflow right here in the doule part
 
-    std::cout << "char: '";
     if (isprint(holder))
+    {
+        std::cout << "char: '";
         std::cout << (char)holder; //check
+    }
     else
     {
         std::cout << "char: Non displayable" << std::endl;
@@ -89,8 +91,17 @@ int CharConv(t_helper helper, char * string)
 }
 
 
-int IntConv(t_helper helper, char * string)
+int IntConv(t_helper helper, char *string)
 {
+    //check over flow right here of the holder
+
+    
+    long double value = std::strtold(string, NULL);
+
+    if (value > INT_MAX || value < INT_MIN)
+    {
+        return 15;
+    }
     int holder;
     if (!helper.fdouble && !helper.fflag)
         holder = static_cast<int>(std::strtold(string, NULL));
@@ -98,7 +109,7 @@ int IntConv(t_helper helper, char * string)
     {
         if (helper.fflag)
         {
-            string[strlen(string) - 1] = '\0';
+            string[helper.index_fflag] = '\0';
             holder = static_cast<int>(std::strtold(string, NULL));
         }
         if (helper.fdouble)
@@ -108,12 +119,22 @@ int IntConv(t_helper helper, char * string)
             holder = static_cast<int>(std::strtold(helper.c_str(), NULL));;
         }
     }
+
+
+ 
     std::cout << "int: " << holder << std::endl;
     return (1);
 }
 
 int FloatConv(t_helper helper, char * string)
 {
+    long double value = std::strtold(string, NULL);
+
+    if (value > INT_MAX || value < INT_MIN)
+    {
+        std::cerr << "float: overflow is catched\n";
+        return 15;
+    }
     if (!helper.fflag && !helper.fdouble)
     {
         std::cout << "float: " << string ;
@@ -146,10 +167,16 @@ int DoubleConv(t_helper helper, char * string)
     // // check over flow
     // std::cout << "double: " << holder ;
     // std::cout << std::endl;
-    if (helper.fflag)
+    long double value = std::strtold(string, NULL);
+
+    if (value > INT_MAX || value < INT_MIN)
     {
-        string[helper.index_fflag] = '\0';
+        std::cerr << "doule: overflow is catched\n";
+        return 15;
     }
+    if (helper.fflag)
+        string[helper.index_fflag] = '\0';
+
     if (!helper.fdouble)
     {
         std::cout << "double: " << string ;
@@ -193,6 +220,11 @@ t_helper typeTaker(char *copy)
             index++;
         else if (copy[index] == '-' || copy[index] == '+')
         {
+            if (index != 0)
+            {
+                std::cerr << "syntax error exit error(15)" << std::endl;
+                exit(14);
+            }
             index++;
             if (!isdigit(copy[index]))
             {
@@ -246,7 +278,7 @@ t_helper typeTaker(char *copy)
             exit(15);
         }
     }
-    std::cout << "string is valid ----->: " << copy << std::endl;
+    // std::cout << "string is valid ----->: " << copy << std::endl;
     return (taker);
 }
 
@@ -254,7 +286,7 @@ t_helper typeTaker(char *copy)
 int  ScalarConverter::convert(const char* str)
 {
     if (!str)
-        std::cerr << "you can't pss in empty string" << std::endl;
+        std::cerr << "you can't pass in empty string" << std::endl;
 
     char* copy = strdup(str);
     
@@ -269,10 +301,18 @@ int  ScalarConverter::convert(const char* str)
         std::cerr << "char coverter error can't take this action" << std::endl;
     }
     // sec convert to int
-    if (IntConv(parced, copy) == 0)
+    if (IntConv(parced, copy) == 0 || IntConv(parced, copy) == 15)
     {
-        std::cerr << "int coverter error can't take this action" << std::endl;
+        if (IntConv(parced, copy) == 15)
+        {
+            std::cerr << "int: overflow is catched\n";
+            // return 1;
+        }
+        else
+            std::cerr << "int coverter error can't take this action" << std::endl;
     }
+
+
     // more convert to float 
     if (FloatConv(parced, copy) == 0)
     {

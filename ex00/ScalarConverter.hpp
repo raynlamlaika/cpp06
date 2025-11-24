@@ -3,7 +3,7 @@
 
 #include <string>
 #include <cstring>
-
+#include "climits"
 class ScalarConverter
 {
     
