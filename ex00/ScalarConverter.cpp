@@ -291,4 +291,3 @@ int  ScalarConverter::convert(const char* str)
 //     convert("-139.f");
 // }
 
-
