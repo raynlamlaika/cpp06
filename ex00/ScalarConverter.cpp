@@ -1,5 +1,4 @@
 
-
 #include "ScalarConverter.hpp"
 #include "cstring"
 #include "iostream"
@@ -7,8 +6,6 @@
 #include <vector>
 #include <sstream>
 #include <cstdlib>
-
-
 
 
 ScalarConverter::ScalarConverter()
@@ -119,25 +116,39 @@ int IntConv(t_helper helper, char *string)
             holder = static_cast<int>(std::strtold(helper.c_str(), NULL));;
         }
     }
-
-
  
     std::cout << "int: " << holder << std::endl;
     return (1);
 }
 
+char* precision_helper(const char* str)
+{
+    size_t precision = 7;
+    size_t len = std::strlen(str);
+    char* result = new char[len + 1];
+    std::strcpy(result, str);
+
+    char* dot = std::strchr(result, '.');
+    if (dot && std::strlen(dot) > precision)
+        dot[1 + precision] = '\0';
+
+    return result; // caller must delete[] result
+}
+
+
+
 int FloatConv(t_helper helper, char * string)
 {
     long double value = std::strtold(string, NULL);
-
-    if (value > INT_MAX || value < INT_MIN)
+    if (value > std::numeric_limits<float>::max() || value < -std::numeric_limits<float>::max())
     {
-        std::cerr << "float: overflow is catched\n";
-        return 15;
+        std::cerr << "float: overflow is caught\n";
+        return (1);
     }
     if (!helper.fflag && !helper.fdouble)
     {
         std::cout << "float: " << string ;
+
         std::cout << ".0f";
         std::cout << std::endl;
         return 1;
@@ -161,19 +172,17 @@ int FloatConv(t_helper helper, char * string)
 
 int DoubleConv(t_helper helper, char * string)
 {
-    // (void)helper;
-    // long double holder;
-    // holder  = std::strtold(string, NULL);
-    // // check over flow
-    // std::cout << "double: " << holder ;
-    // std::cout << std::endl;
     long double value = std::strtold(string, NULL);
 
-    if (value > INT_MAX || value < INT_MIN)
+    // Check for double overflow
+    if (std::isinf(value) ||
+        value > std::numeric_limits<float>::max() ||
+        value < -std::numeric_limits<float>::max())
     {
-        std::cerr << "doule: overflow is catched\n";
-        return 15;
+        std::cerr << "double: overflow is caught\n";
+        return 1;
     }
+
     if (helper.fflag)
         string[helper.index_fflag] = '\0';
 
@@ -301,7 +310,8 @@ int  ScalarConverter::convert(const char* str)
         std::cerr << "char coverter error can't take this action" << std::endl;
     }
     // sec convert to int
-    if (IntConv(parced, copy) == 0 || IntConv(parced, copy) == 15)
+    int value = IntConv(parced, copy) ;
+    if (value == 0 || value == 15)
     {
         if (IntConv(parced, copy) == 15)
         {
@@ -314,12 +324,12 @@ int  ScalarConverter::convert(const char* str)
 
 
     // more convert to float 
-    if (FloatConv(parced, copy) == 0)
+    if (FloatConv(parced, precision_helper(copy)) == 0)
     {
         std::cerr << "float coverter error can't take this action" << std::endl;
     }
     // last convert to double 
-    if (DoubleConv(parced, copy) == 0)
+    if (DoubleConv(parced, precision_helper(copy)) == 0)
     {
         std::cerr << "double coverter error can't take this action" << std::endl;
     }

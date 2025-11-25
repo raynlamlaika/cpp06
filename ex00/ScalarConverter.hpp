@@ -1,9 +1,14 @@
 
-#include <iostream>
 
+#ifndef SCALARCONVERTER_HPP
+# define SCALARCONVERTER_HPP
+#include <iostream>
 #include <string>
 #include <cstring>
 #include "climits"
+#include <cmath>
+#include <limits>
+
 class ScalarConverter
 {
     
@@ -21,3 +26,4 @@ public:
 
 };
 
+#endif
