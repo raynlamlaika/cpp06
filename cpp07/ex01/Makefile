@@ -1,6 +1,6 @@
-NAME = Bureaucrat
+NAME = Temp
 
-SRC =   iter.cpp main.cpp
+SRC =   main.cpp
 
 OBJ = $(SRC:.cpp=.o)
 

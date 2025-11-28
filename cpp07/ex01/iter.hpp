@@ -3,12 +3,30 @@
 
 #ifndef ITER_HPP
 # define ITER_HPP
+#include <iostream>
+#include <unistd.h>
+template <typename T>
+
+
+void func(T const &var1)
+{   
+    std::cout << "allo allo elems: " << var1 << std::endl;
+
+}
 
 template <typename T>
 
-void iter(T*arr, const int len, void (*func)(T))
+void iter(T *arr, const int len, void (*func)(T const &) )
 {
-
+    if (!arr || len <= 0 || !func)
+    {
+        std::cerr << "checkout the parameters that are passed\n";
+        _exit(1);
+    }
+    for (int i =0; i <= len ; i++)
+    {
+        func(arr[i]);
+    }
 }
 
 #endif
