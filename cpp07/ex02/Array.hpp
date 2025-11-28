@@ -2,14 +2,15 @@
 # define ARRAY_HPP
 
 
-template <typename T>
+template <class T>
 
 class Array
 {
 private :
-    ;
+    int *arr;
 public :
     Array();
+    Array(unsigned int n);
 
 };
 
