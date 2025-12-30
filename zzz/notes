@@ -1,0 +1,50 @@
+about the static cast:
+
+the static cast 
+   :static_cast is a compile-time cast.
+   :Pointer-interconvertible objects if those following rules are present
+   :Base-class subobject → pointer-interconvertible ✔
+   -First non-static data member (standard-layout only) → pointer-interconvertible ✔
+   -Any other member → not pointer-interconvertible ✘
+
+
+
+the const cast 
+   :operator specifically used to add or
+   remove const or volatile qualifiers from a
+   pointer or reference the action done with in the complie time
+   so const it force to change the qualifier const 
+   its danguers if it not used in the right place
+
+
+the reinterpret_cast
+   : It is primarily a compile-time directive/does not do any runtime checks
+   type of explicit type conversion
+   Type aliasing
+   : - Type accessibility
+
+
+dynamic_cast
+   :when passsing in daynamic cast all  the following is true
+      - base class id polymorphic -cast through a base class oe reference - RTTI must not disabled
+      If the cast fails, an exception is thrown (std::bad_cast).
+
+
+
+run-time type identification (RTTI)
+
+crosscast
+
+
+instruction set architecture (ISA)
+
+About Microarchitecture:
+   Microcoded Microarchitecture
+      it refer to how cpu is designed internally to execute instructions.
+      is in blueprint that defines how a processor works at a hardware level.
+      ISA = The language a CPU understands.
+
+      those arch are building usinf in HDL ' hardware descripton languages'
+
+   the key conncepte of Microarchitecture:
+   ~Pipeline:
