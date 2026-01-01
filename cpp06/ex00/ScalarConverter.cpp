@@ -11,7 +11,6 @@
 ScalarConverter::ScalarConverter()
 {
     std::cout <<  "constractor is called\n";
-
 }
 
 ScalarConverter &ScalarConverter::operator=(const ScalarConverter &other)
@@ -25,16 +24,6 @@ ScalarConverter::~ScalarConverter()
     std::cout <<  "deconstractor is called\n";
 }
 
-typedef struct  s_helper
-{
-    int sing         ;
-    int index_sing   ;
-    int fflag        ;
-    int index_fflag  ;
-    int fdouble      ;
-    int index_fdouble;
-}               t_helper;
-
 std::string split(std::string str, char delimiter)
 {
     std::string reslt;
@@ -44,11 +33,11 @@ std::string split(std::string str, char delimiter)
     reslt = str.substr(start, end - start);
     return reslt;
 }
-#include <sstream>
+
 
 int CharConv(t_helper helper, char * string)
 {
-    int holder;
+    int holder = 0;
     if (!helper.fdouble && !helper.fflag)
         holder = static_cast<int>(std::strtold(string, NULL));
     else
@@ -67,9 +56,9 @@ int CharConv(t_helper helper, char * string)
     }
     // check overflow right here in the int part
     long overflowcheck = static_cast<long>(std::strtold(string, NULL));
-    if (overflowcheck > 127 || overflowcheck < -128)
+    if ((static_cast<int>(overflowcheck) > 127) && (static_cast<int>(overflowcheck) < -128))
     {
-        std::cout << "char: out of range" << std::endl;
+        std::cout << "char: impossible" << std::endl;
         return 1;
     }
     // check overflow right here in the doule part
@@ -82,7 +71,7 @@ int CharConv(t_helper helper, char * string)
     }
     else
     {
-        std::cout << "char: Non displayable" << std::endl;
+        std::cout << "char: impossible" << std::endl;
         return 1;
     }
     std::cout << "'"<< std::endl;
@@ -156,7 +145,6 @@ int FloatConv(t_helper helper, char * string)
     return (1);
 }
 
-#include <sstream>
 
 int DoubleConv(t_helper helper, char * string)
 {
@@ -187,9 +175,17 @@ t_helper typeTaker(char *copy)
     taker.index_fdouble = 0;
     len                 = static_cast<int>(strlen(copy));
 
-    while (copy[index])
+
+    if (strcmp(copy,"nanf") == 0 || strcmp(copy,"inff") == 0 || \
+    strcmp(copy,"+inff") == 0 || strcmp(copy,"-inff") == 0 ||strcmp(copy,"-inf") == 0 \
+    || strcmp(copy,"+inf") == 0 || \
+    strcmp(copy,"nan") == 0)
     {
-        if ((copy[index] < 127 && copy[index] > -127) && len == 1)
+        return (taker);
+    }
+    while (copy[index]) 
+    {
+        if ((copy[index] < 127 && copy[index] > -127) && len == 1 && !isdigit(copy[index]))
         {
             return taker;
         }
@@ -243,7 +239,7 @@ t_helper typeTaker(char *copy)
         }
         if (taker.index_fflag != len - 1 || taker.fflag > 1)
         {
-            std::cout <<"   "<<taker.index_fflag << "  " << len << "  " << index << " "<<  taker.fflag <<" 'f' position isn't corrrect" << std::endl;
+            std::cerr << "syntax error exit error(2225)" << std::endl;
             exit(15);
         }
     }
@@ -252,35 +248,29 @@ t_helper typeTaker(char *copy)
     {
         if(taker.fdouble && taker.sing == 1)
         {
-            std::cout<<"  the index fflag"<< taker.index_fflag << " the len: " << len << " the index " << index << "  '.' - position isn't corrrect" << std::endl;
+            std::cerr << "syntax error exit error(2225)" << std::endl;
             exit(15);
         }
         // taker.index_fdouble == 0 || 
         if (taker.index_fdouble == len - 1 || taker.fdouble > 1)
         {
-            std::cout <<"  the index fflag"<< taker.index_fflag << " the len: " << len << " the index " << index << " th flag is "<<  taker.fflag <<"  '.' position isn't incorrrect" << std::endl;
+            std::cerr << "syntax error exit error(2225)" << std::endl;
             exit(15);
         }
     }
-    // std::cout << "string is valid ----->: " << copy << std::endl;
     return (taker);
 }
-
-#include <cstdlib> 
-#include <iostream>
 
 int  ScalarConverter::convert(const char* str)
 {
     if (!str)
         std::cerr << "you can't pass in empty string" << std::endl;
 
-    if (isprint(str[0]) && strlen(str) == 1)
+    if (isprint(str[0]) && strlen(str) == 1 && !isdigit(str[0]))
     {
         int hrlper = static_cast<int>(str[0]);
-        // std::string s = std::to_string(hrlper);
-
         std::ostringstream oss;
-        oss << hrlper; // Write the integer to the stream
+        oss << hrlper;
         std::string s = oss.str();
         str = s.c_str();
     }

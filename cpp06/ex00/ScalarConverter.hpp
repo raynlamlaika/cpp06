@@ -7,7 +7,21 @@
 #include <cstring>
 #include "climits"
 #include <cmath>
+#include <sstream>
 #include <limits>
+#include <cstdlib>
+
+
+typedef struct  s_helper
+{
+    int sing         ;
+    int index_sing   ;
+    int fflag        ;
+    int index_fflag  ;
+    int fdouble      ;
+    int index_fdouble;
+}               t_helper;
+
 
 class ScalarConverter
 {
