@@ -181,8 +181,13 @@ t_helper typeTaker(char *copy)
     || strcmp(copy,"+inf") == 0 || \
     strcmp(copy,"nan") == 0)
     {
+        std::cout << "char :" << std::strtod(copy, NULL) << std::endl;
+        std::cout << "int :" << std::strtod(copy, NULL) << std::endl;
+        std::cout << "double :" <<std::strtod(copy, NULL)  << std::endl;
+        std::cout << "float :" << std::strtof(copy, NULL) << std::endl;
         return (taker);
     }
+
     while (copy[index]) 
     {
         if ((copy[index] < 127 && copy[index] > -127) && len == 1 && !isdigit(copy[index]))
@@ -301,14 +306,17 @@ int  ScalarConverter::convert(const char* str)
 
 
     // more convert to float 
-    if (FloatConv(parced, precision_helper(copy)) == 0)
+    char *precision  = precision_helper(copy);
+    if (FloatConv(parced, precision) == 0)
     {
         // std::cerr << "float coverter error can't take this action" << std::endl;
     }
     // last convert to double 
-    if (DoubleConv(parced, precision_helper(copy)) == 0)
+    if (DoubleConv(parced, precision) == 0)
     {
         // std::cerr << "double :coverter error can't take this action" << std::endl;
     }
+    delete precision;
+    delete copy;
     return 0;
 }

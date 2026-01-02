@@ -6,6 +6,7 @@ the static cast
    :Base-class subobject → pointer-interconvertible ✔
    -First non-static data member (standard-layout only) → pointer-interconvertible ✔
    -Any other member → not pointer-interconvertible ✘
+   static cast can performe also the upcast 
 
 
 
@@ -28,7 +29,8 @@ dynamic_cast
    :when passsing in daynamic cast all  the following is true
       - base class id polymorphic -cast through a base class oe reference - RTTI must not disabled
       If the cast fails, an exception is thrown (std::bad_cast).
-
+      basly needed in the safw downcast where we pass frm the base class to the deriv class
+      with refrence the exception throwing is std::bad_cast
 
 
 run-time type identification (RTTI)
@@ -61,3 +63,6 @@ handel case of .0f is valid and 1f also make code looks great ...
 
 
 check the meta data that get holded by the casting types reffrence is the  valid lidation on the 
+
+
+in tthe c-style the type cast are choisen in the compile time, no contole over the type converstion 

@@ -9,5 +9,6 @@ int main(int ac, char **av)
         return (std::cout << "invalid args\n", 0);
     ScalarConverter *ps = new ScalarConverter;
     ps->convert(av[1]);
+    delete ps;
     return 0;
 }
