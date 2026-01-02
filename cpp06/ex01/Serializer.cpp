@@ -1,7 +1,5 @@
 #include "Serializer.hpp"
 
-
-
 Serializer::Serializer(){}
 
 Serializer &Serializer::operator=(Serializer const &other){

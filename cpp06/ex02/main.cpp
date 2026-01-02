@@ -72,7 +72,39 @@ void identify(Base& p)
 
 int main()
 {
+
+    Base *A = generate();
+    Base *A1 = generate();
+    Base *A2 = generate();
+    Base *A3 = generate();
+    Base *A4 = generate();
+    Base *A5 = generate();
+    Base *A6 = generate();
+
+    identify(A);
+    identify(A1);
+    identify(A2);
+    identify(A3);
+    identify(A4);
+    identify(A5);
+    identify(A6);
+
+    identify(*A);
+    identify(*A1);
+    identify(*A2);
+    identify(*A3);
+    identify(*A4);
+    identify(*A5);
+    identify(*A6);
     
+    delete A;
+    delete A1;
+    delete A2;
+    delete A3;
+    delete A4;
+    delete A5;
+    delete A6;
+
     return 1;
 }
 

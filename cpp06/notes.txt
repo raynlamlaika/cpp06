@@ -52,8 +52,9 @@ About Microarchitecture:
 
 
 about the up/down cast : 
-
-
+downcast is going from the base class to the deriv class
+upcast is going from deriv class to the base class (is more safer where the class hold both of
+the base and deriv class to easy on the compiler to cut them)
 
 
 handel case of .0f is valid and 1f also make code looks great ...
