@@ -53,7 +53,7 @@ void identify(Base& p)
     }
     catch(const std::exception& e)
     {
-        // std::cerr << e.what() << '\n';
+        // std::cout << e.what() << '\n';
     }
     try
     {

@@ -66,3 +66,6 @@ check the meta data that get holded by the casting types reffrence is the  valid
 
 
 in tthe c-style the type cast are choisen in the compile time, no contole over the type converstion 
+
+
+./Casting $'\t' | parameter, convert |

@@ -1,16 +1,9 @@
 
 #include "ScalarConverter.hpp"
-#include "cstring"
-#include "iostream"
-#include <string>
-#include <vector>
-#include <sstream>
-#include <cstdlib>
 
 
 ScalarConverter::ScalarConverter()
 {
-    std::cout <<  "constractor is called\n";
 }
 
 ScalarConverter &ScalarConverter::operator=(const ScalarConverter &other)
@@ -21,7 +14,6 @@ ScalarConverter &ScalarConverter::operator=(const ScalarConverter &other)
 
 ScalarConverter::~ScalarConverter()
 {
-    std::cout <<  "deconstractor is called\n";
 }
 
 std::string split(std::string str, char delimiter)
@@ -34,12 +26,12 @@ std::string split(std::string str, char delimiter)
     return reslt;
 }
 
-
 int CharConv(t_helper helper, char * string)
 {
-    int holder = 0;
+    long double  holder = 0;
     if (!helper.fdouble && !helper.fflag)
-        holder = static_cast<int>(std::strtold(string, NULL));
+        holder = std::strtold(string, NULL);
+        // holder = static_cast<int>(std::strtold(string, NULL));
     else
     {
         if (helper.fflag)
@@ -54,20 +46,20 @@ int CharConv(t_helper helper, char * string)
             holder = static_cast<int>(std::strtold(helper.c_str(), NULL));
         }
     }
-    // check overflow right here in the int part
-    long overflowcheck = static_cast<long>(std::strtold(string, NULL));
-    if ((static_cast<int>(overflowcheck) > 127) && (static_cast<int>(overflowcheck) < -128))
+    long double value = std::strtold(string, NULL);
+
+    if (INFINITY < value)
+        return(std::cout << "float : inf\n", 1);
+    if (value > 127 || value < -128)
     {
         std::cout << "char: impossible" << std::endl;
         return 1;
     }
-    // check overflow right here in the doule part
-
-
-    if (isprint(holder))
+    if (value >= 32 && value <= 126)
     {
+        
         std::cout << "char: '";
-        std::cout << (char)holder; //check
+        std::cout << static_cast<char>(holder);
     }
     else
     {
@@ -81,13 +73,12 @@ int CharConv(t_helper helper, char * string)
 
 int IntConv(t_helper helper, char *string)
 {
-    //check over flow right here of the holder
-
+    
     
     long double value = std::strtold(string, NULL);
-
     if (value > INT_MAX || value < INT_MIN)
     {
+        std::cout << "int: impossible" << std::endl;
         return 15;
     }
     int holder;
@@ -107,10 +98,11 @@ int IntConv(t_helper helper, char *string)
             holder = static_cast<int>(std::strtold(helper.c_str(), NULL));;
         }
     }
- 
+
     std::cout << "int: " << holder << std::endl;
     return (1);
 }
+
 
 char* precision_helper(const char* str)
 {
@@ -126,8 +118,6 @@ char* precision_helper(const char* str)
     return result; // caller must delete[] result
 }
 
-#include <iomanip>
-
 int FloatConv(t_helper helper, char * string)
 {
     (void)helper;
@@ -138,7 +128,10 @@ int FloatConv(t_helper helper, char * string)
     if (INFINITY < value)
         return(std::cout << "float : inf\n", 1);
     if (value > MAXFLOAT || value < -MAXFLOAT)
+    {
+       std::cout << "float : impossible\n";
         return 0;
+    }
 
     std::cout << "float: " << std::fixed << std::setprecision(8) << value ;
     std::cout << "f" << std::endl;
@@ -153,8 +146,7 @@ int DoubleConv(t_helper helper, char * string)
     std::stringstream ss(string);
     ss >> value;
     if (ss.fail())
-        return (std::cout << "double: over/under flow detected\n" , 0 );
-    // ss >> string;
+        return (std::cout << "double: impossible\n" , 0 );
     value = std::strtod(string, NULL);
 
     std::cout << "double: " << std::fixed << std::setprecision(8) << value << std::endl;
@@ -176,17 +168,29 @@ t_helper typeTaker(char *copy)
     len                 = static_cast<int>(strlen(copy));
 
 
-    if (strcmp(copy,"nanf") == 0 || strcmp(copy,"inff") == 0 || \
-    strcmp(copy,"+inff") == 0 || strcmp(copy,"-inff") == 0 ||strcmp(copy,"-inf") == 0 \
-    || strcmp(copy,"+inf") == 0 || \
-    strcmp(copy,"nan") == 0)
+    if (!std::strcmp(copy, "nan")   || !std::strcmp(copy, "nanf")  ||
+    !std::strcmp(copy, "+inf")  || !std::strcmp(copy, "+inff") ||
+    !std::strcmp(copy, "-inf")  || !std::strcmp(copy, "-inff"))
     {
-        std::cout << "char :" << std::strtod(copy, NULL) << std::endl;
-        std::cout << "int :" << std::strtod(copy, NULL) << std::endl;
-        std::cout << "double :" <<std::strtod(copy, NULL)  << std::endl;
-        std::cout << "float :" << std::strtof(copy, NULL) << std::endl;
-        return (taker);
+        std::cout << "char: impossible" << std::endl;
+        std::cout << "int: impossible" << std::endl;
+
+        if (copy[std::strlen(copy) - 1] == 'f')
+            std::cout << "float: " << copy << std::endl;
+        else
+            std::cout << "float: " << copy << "f" << std::endl;
+
+        if (copy[std::strlen(copy) - 1] == 'f' && strcmp(copy, "+inf") && strcmp(copy, "-inf"))
+            std::cout << "double: " 
+                    << std::string(copy, std::strlen(copy) - 1)
+                    << std::endl;
+        else
+            std::cout << "double: " << copy << std::endl;
+
+        exit(1);
+        return taker;
     }
+
 
     while (copy[index]) 
     {
@@ -200,13 +204,13 @@ t_helper typeTaker(char *copy)
         {
             if (index != 0)
             {
-                std::cerr << "syntax error exit error(152)" << std::endl;
+                std::cout << "syntax error exit error(152)" << std::endl;
                 exit(14);
             }
             index++;
             if (!isdigit(copy[index]) && copy[index] != '.')
             {
-                std::cerr << "syntax error exit error(2225)" << std::endl;
+                std::cout << "syntax error exit error(2225)" << std::endl;
                 exit(14);
             }
         }
@@ -223,43 +227,41 @@ t_helper typeTaker(char *copy)
             index++;
             if (!isdigit(copy[index]))
             {
-                std::cerr << "syntax error exit error(14)" << std::endl;
+                std::cout << "syntax error exit error(14)" << std::endl;
                 exit(14);
             }
         }
         else
         {
-            std::cerr << "syntax error exit error(15)" << std::endl;
+            std::cout << "syntax error exit error(15)" << std::endl;
             exit(15);
         }
     }
-    // the f position 
-    
+
     if (taker.fflag)
     {
         if (taker.fdouble == 0)
         {
-            std::cerr << "syntax error exit error ." << std::endl;
+            std::cout << "syntax error exit error ." << std::endl;
             exit(15);
         }
         if (taker.index_fflag != len - 1 || taker.fflag > 1)
         {
-            std::cerr << "syntax error exit error(2225)" << std::endl;
+            std::cout << "syntax error exit error" << std::endl;
             exit(15);
         }
     }
-    // the point position 
+
     if (taker.fdouble)
     {
         if(taker.fdouble && taker.sing == 1)
         {
-            std::cerr << "syntax error exit error(2225)" << std::endl;
+            std::cout << "syntax error exit error" << std::endl;
             exit(15);
         }
-        // taker.index_fdouble == 0 || 
         if (taker.index_fdouble == len - 1 || taker.fdouble > 1)
         {
-            std::cerr << "syntax error exit error(2225)" << std::endl;
+            std::cout << "syntax error exit error" << std::endl;
             exit(15);
         }
     }
@@ -269,7 +271,7 @@ t_helper typeTaker(char *copy)
 int  ScalarConverter::convert(const char* str)
 {
     if (!str)
-        std::cerr << "you can't pass in empty string" << std::endl;
+        std::cout << "you can't pass in empty string" << std::endl;
 
     if (isprint(str[0]) && strlen(str) == 1 && !isdigit(str[0]))
     {
@@ -279,44 +281,32 @@ int  ScalarConverter::convert(const char* str)
         std::string s = oss.str();
         str = s.c_str();
     }
-    char* copy = strdup(str);
-    
-    // need to hard code the inf nan ...
+    char* copy = const_cast<char *>(str);
 
-    // get the type of input 
     t_helper parced = typeTaker(copy);
     
     // first convert to char 
-    if (CharConv(parced, copy) == 0)
-    {
-        std::cerr << "char coverter error can't take this action" << std::endl;
-    }
-    // sec convert to int
-    int value = IntConv(parced, copy);
-    if (value == 0 || value == 15)
-    {
-        if (IntConv(parced, copy) == 15)
-        {
-            std::cerr << "int: overflow/underflow is catched\n";
-            // return 1;
-        }
-        else
-            std::cerr << "int coverter error can't take this action" << std::endl;
-    }
+    CharConv(parced, copy);
+    // sec convert to int 
+    // int value = 
+    IntConv(parced, copy);
+    // if (value == 0 || value == 15)
+    // {
+    //     if (IntConv(parced, copy) == 15)
+    //     {
+    //         std::cout << "int: impossible\n";
+    //         // return 1;
+    //     }
+    //     else
+    //         std::cout << "int coverter error can't take this action" << std::endl;
+    // }
 
 
     // more convert to float 
     char *precision  = precision_helper(copy);
-    if (FloatConv(parced, precision) == 0)
-    {
-        // std::cerr << "float coverter error can't take this action" << std::endl;
-    }
-    // last convert to double 
-    if (DoubleConv(parced, precision) == 0)
-    {
-        // std::cerr << "double :coverter error can't take this action" << std::endl;
-    }
+    FloatConv(parced, precision);
+    DoubleConv(parced, precision);
+
     delete precision;
-    delete copy;
     return 0;
 }

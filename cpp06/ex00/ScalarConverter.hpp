@@ -10,6 +10,14 @@
 #include <sstream>
 #include <limits>
 #include <cstdlib>
+#include "cstring"
+#include "iostream"
+#include <string>
+#include <vector>
+#include <sstream>
+#include <cstdlib>
+#include <iomanip>
+
 
 
 typedef struct  s_helper
@@ -29,8 +37,9 @@ class ScalarConverter
 private:
     
 public:
-    // orthodox Form
+    // orthodox Form 
     ScalarConverter();
+    //  copy constructor
     ScalarConverter &operator=(const ScalarConverter &other);
     ~ScalarConverter();
 
