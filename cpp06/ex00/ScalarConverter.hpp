@@ -11,6 +11,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <cerrno>
+#include <cfloat>
 
 #include "climits"
 #include "cstring"

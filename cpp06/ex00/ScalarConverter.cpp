@@ -172,10 +172,22 @@ bool floatDetection(t_helper parced, std::string copyString)
   if (parced.fflag != 1)
     return false;
   
-  char **helper = NULL;
-  float floatval = std::strtof(copyString.c_str(), helper);
+  char *helper = NULL;
+  errno = 0;
+  float floatval = std::strtof(copyString.c_str(), NULL);
+  if (errno == ERANGE)
+{
+  if (errno == ERANGE)
+{
+std::cout << "char: impossible" << std::endl;
+std::cout << "int: impossible" << std::endl;
+std::cout << "float: impossible" << std::endl;
+std::cout << "double: impossible" << std::endl;
+return true;
+}
+}
   // check fial
-  if (helper && *helper && **helper != '\0')
+  if (helper && *helper && *helper != '\0')
     return false;
 
   //check null after
@@ -199,14 +211,19 @@ bool floatDetection(t_helper parced, std::string copyString)
 
 bool doubleDetection(t_helper parced, std::string copyString)
 {
-  if (parced.fflag == 1)
-    return false;
-char **helper = NULL;
-  double doubleval = std::strtod(copyString.c_str(), helper);
-  // check fial
-  if (helper && *helper && **helper != '\0')
-    return false;
 
+(void) parced;
+  errno = 0;
+  double doubleval = std::strtod(copyString.c_str(), NULL);
+  if (errno == ERANGE)
+{
+std::cout << "char: impossible" << std::endl;
+std::cout << "int: impossible" << std::endl;
+std::cout << "float: impossible" << std::endl;
+std::cout << "double: impossible" << std::endl;
+return true;
+}
+  // check fial
   //check null after
   if (doubleval < 0 || doubleval > 127)
     std::cout << "char: impossible" << std::endl;
