@@ -113,16 +113,21 @@ t_helper typeTaker(const char *copy) {
 bool charDetection(t_helper parced, std::string copyString) {
   if (parced.fdouble == 1 || parced.fflag == 1)
     return false;
-  if (copyString.length() == 1 && std::isprint(copyString[0]) &&
-      !std::isdigit(copyString[0])) {
+  
+  if (copyString.length() == 1 && !std::isdigit(copyString[0])) {
     /* code */
-    std::cout << "char: '" << copyString[0] << "'" << std::endl;
     int helper = static_cast<int>(copyString[0]);
+    
+    if (std::isprint(copyString[0]))
+      std::cout << "char: '" << copyString[0] << "'" << std::endl;
+    else
+      std::cout << "char: Non displayable" << std::endl;
+    
     std::cout << "int: " << helper << std::endl;
     float floatHelper = static_cast<float>(copyString[0]);
-    std::cout << "float: " << floatHelper << std::endl;
+    std::cout << "float: " << floatHelper << ".0f" << std::endl;
     double doubleHelper = static_cast<double>(copyString[0]);
-    std::cout << "double: " << doubleHelper << std::endl;
+    std::cout << "double: " << doubleHelper << ".0" << std::endl;
     return true;
   }
   return false;
@@ -138,7 +143,7 @@ bool intDetection(t_helper parced, std::string copyString)
   if (intval < INT_MIN || intval > INT_MAX)
     return false;
   else
-    intval = static_cast<int>(intval);
+    intval = atoi(copyString.c_str());
   // change null later to check for faild
   if (intval < 0 || intval > 127)
     std::cout << "char: impossible" << std::endl;
