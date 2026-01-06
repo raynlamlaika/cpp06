@@ -5,11 +5,13 @@
 
 int main(int ac, char **av)
 {
-    if (ac > 2)
+    if (ac != 2)
         return (std::cout << "invalid args\n", 0);
     ScalarConverter::convert(av[1]);
+
+
+    // int (ScalarConverter::*ptr)(char *) = &ScalarConverter::convert;
+    
+
     return 0;
-
-
-
 }

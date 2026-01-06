@@ -11,7 +11,10 @@ Serializer::Serializer(Serializer const &other){
     (void)other;
 }
 
-Serializer::~Serializer(){}
+Serializer::~Serializer()
+{
+    
+}
 
 uintptr_t  Serializer::serialize(Data* ptr)
 {

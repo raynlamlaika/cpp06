@@ -1,6 +1,6 @@
 NAME = Casting
 
-SRC =   A.cpp  Base.cpp  B.cpp  C.cpp main.cpp
+SRC =     Base.cpp   main.cpp
 
 OBJ = $(SRC:.cpp=.o)
 

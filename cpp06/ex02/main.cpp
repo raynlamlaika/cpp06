@@ -9,12 +9,6 @@
 
 Base* generate(void)
 {
-    static bool helper = 0 ;
-    if (!helper)
-    {
-        std::srand(time(NULL));
-        helper = true;
-    } 
     const int RandomValue = std::rand() % 3;
     if (RandomValue == 1)
         return (new A());
@@ -42,69 +36,44 @@ void identify(Base& p)
         std::cout << "the type of pointer passed is type of class A" << std::endl;
         (void)ptr;
     }
-    catch(const std::exception& e)
+    catch (const std::exception& e)
     {
+        try
+        {
+            Base &ptr =dynamic_cast<B&>(p);
+            std::cout << "the type of pointer passed is type of class B" << std::endl;
+            (void)ptr;
+        }
+        catch(const std::exception& e)
+        {
+            try
+            {
+                Base &ptr = dynamic_cast<C&>(p);
+                std::cout << "the type of pointer passed is type of class C" << std::endl;
+                (void)ptr;
+            }
+            catch(const std::exception& e)
+            {
+
+            }
+        }
+        
     }
-    try
-    {
-        Base &ptr =dynamic_cast<B&>(p);
-        std::cout << "the type of pointer passed is type of class B" << std::endl;
-        (void)ptr;
-    }
-    catch(const std::exception& e)
-    {
-        // std::cout << e.what() << '\n';
-    }
-    try
-    {
-        Base &ptr = dynamic_cast<C&>(p);
-        std::cout << "the type of pointer passed is type of class C" << std::endl;
-        (void)ptr;
-    }
-    catch(const std::exception& e)
-    {
-    }
+
 
 }
-
-
 
 
 int main()
 {
-
+    srand(time(0));
     Base *A = generate();
-    Base *A1 = generate();
-    Base *A2 = generate();
-    Base *A3 = generate();
-    Base *A4 = generate();
-    Base *A5 = generate();
-    Base *A6 = generate();
 
     identify(A);
-    identify(A1);
-    identify(A2);
-    identify(A3);
-    identify(A4);
-    identify(A5);
-    identify(A6);
 
     identify(*A);
-    identify(*A1);
-    identify(*A2);
-    identify(*A3);
-    identify(*A4);
-    identify(*A5);
-    identify(*A6);
     
     delete A;
-    delete A1;
-    delete A2;
-    delete A3;
-    delete A4;
-    delete A5;
-    delete A6;
 
     return 1;
 }
-

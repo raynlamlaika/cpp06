@@ -8,16 +8,12 @@ ScalarConverter &ScalarConverter::operator=(const ScalarConverter &other) {
   return (*this);
 }
 
-ScalarConverter::~ScalarConverter() {}
-
-std::string split(std::string str, char delimiter) {
-  std::string reslt;
-  size_t start = 0;
-
-  size_t end = str.find(delimiter);
-  reslt = str.substr(start, end - start);
-  return reslt;
+ScalarConverter::ScalarConverter(ScalarConverter const &other)
+{
+  static_cast<void>(other);
 }
+
+ScalarConverter::~ScalarConverter() {}
 
 t_helper typeTaker(const char *copy) {
   t_helper taker;
@@ -60,12 +56,12 @@ t_helper typeTaker(const char *copy) {
       index++;
     else if (copy[index] == '-' || copy[index] == '+') {
       if (index != 0) {
-        std::cout << "syntax error exit error(152)" << std::endl;
+        std::cout << "char : impossible\nint : impossible\nfloat : impossible\ndouble : impossible" << std::endl;
         exit(14);
       }
       index++;
       if (!isdigit(copy[index]) && copy[index] != '.') {
-        std::cout << "syntax error exit error(2225)" << std::endl;
+        std::cout << "char : impossible\nint : impossible\nfloat : impossible\ndouble : impossible" << std::endl;
         exit(14);
       }
     } else if (copy[index] == 'f') {
@@ -77,33 +73,33 @@ t_helper typeTaker(const char *copy) {
       taker.fdouble += 1;
       index++;
       if (!isdigit(copy[index])) {
-        std::cout << "syntax error exit error(14)" << std::endl;
+        std::cout << "char : impossible\nint : impossible\nfloat : impossible\ndouble : impossible" << std::endl;
         exit(14);
       }
     } else {
-      std::cout << "syntax error exit error(15)" << std::endl;
+      std::cout << "char : impossible\nint : impossible\nfloat : impossible\ndouble : impossible" << std::endl;
       exit(15);
     }
   }
 
   if (taker.fflag) {
     if (taker.fdouble == 0) {
-      std::cout << "syntax error exit error ." << std::endl;
+      std::cout << "char : impossible\nint : impossible\nfloat : impossible\ndouble : impossible" << std::endl;
       exit(15);
     }
     if (taker.index_fflag != len - 1 || taker.fflag > 1) {
-      std::cout << "syntax error exit error" << std::endl;
+      std::cout << "char : impossible\nint : impossible\nfloat : impossible\ndouble : impossible" << std::endl;
       exit(15);
     }
   }
 
   if (taker.fdouble) {
     if (taker.fdouble && taker.sing == 1) {
-      std::cout << "syntax error exit error" << std::endl;
+      std::cout << "char : impossible\nint : impossible\nfloat : impossible\ndouble : impossible" << std::endl;
       exit(15);
     }
     if (taker.index_fdouble == len - 1 || taker.fdouble > 1) {
-      std::cout << "syntax error exit error" << std::endl;
+      std::cout << "char : impossible\nint : impossible\nfloat : impossible\ndouble : impossible" << std::endl;
       exit(15);
     }
   }
@@ -115,7 +111,6 @@ bool charDetection(t_helper parced, std::string copyString) {
     return false;
   
   if (copyString.length() == 1 && !std::isdigit(copyString[0])) {
-    /* code */
     int helper = static_cast<int>(copyString[0]);
     
     if (std::isprint(copyString[0]))
@@ -139,12 +134,13 @@ bool intDetection(t_helper parced, std::string copyString)
 
   if (parced.fdouble == 1 || parced.fflag == 1) return false;
 
-  long long intval = std::strtoll(copyString.c_str(), NULL, 10);
+  long intval = std::strtol(copyString.c_str(), NULL, 10);
   if (intval < INT_MIN || intval > INT_MAX)
     return false;
   else
     intval = atoi(copyString.c_str());
-  // change null later to check for faild
+
+    
   if (intval < 0 || intval > 127)
     std::cout << "char: impossible" << std::endl;
   else if (std::isprint(static_cast<char>(intval)))
@@ -176,33 +172,16 @@ bool floatDetection(t_helper parced, std::string copyString)
 {
   if (parced.fflag != 1)
     return false;
-  
-  char *helper = NULL;
-  errno = 0;
-  float floatval = std::strtof(copyString.c_str(), NULL);
-  if (errno == ERANGE)
-{
-  if (errno == ERANGE)
-{
-std::cout << "char: impossible" << std::endl;
-std::cout << "int: impossible" << std::endl;
-std::cout << "float: impossible" << std::endl;
-std::cout << "double: impossible" << std::endl;
-return true;
-}
-}
-  // check fial
-  if (helper && *helper && *helper != '\0')
-    return false;
 
-  //check null after
+  float floatval = static_cast<float>(std::strtod(copyString.c_str(), NULL));
+
   if (floatval < 0 || floatval > 127)
     std::cout << "char: impossible" << std::endl;
   else if (std::isprint(static_cast<char>(floatval)))
     std::cout << "char: '" << static_cast<char>(floatval) << "'" << std::endl;
   else
     std::cout << "char: Non displayable" << std::endl;
-  if (floatval < INT_MIN || floatval > INT_MAX)
+  if (floatval < -2147483648.0f || floatval > 2147483647.0f)
     std::cout << "int: impossible" << std::endl;
   else
     std::cout << "int: " << static_cast<int>(floatval) << std::endl;
@@ -216,20 +195,10 @@ return true;
 
 bool doubleDetection(t_helper parced, std::string copyString)
 {
+  (void)parced;
 
-(void) parced;
-  errno = 0;
   double doubleval = std::strtod(copyString.c_str(), NULL);
-  if (errno == ERANGE)
-{
-std::cout << "char: impossible" << std::endl;
-std::cout << "int: impossible" << std::endl;
-std::cout << "float: impossible" << std::endl;
-std::cout << "double: impossible" << std::endl;
-return true;
-}
-  // check fial
-  //check null after
+
   if (doubleval < 0 || doubleval > 127)
     std::cout << "char: impossible" << std::endl;
   else if (std::isprint(static_cast<char>(doubleval)))
@@ -248,7 +217,7 @@ return true;
   return true;
 }
 
-void ScalarConverter::detecter(t_helper parced, std::string copyString) {
+void detecter(t_helper parced, std::string copyString) {
   // check for char
   if (charDetection(parced, copyString) == true) {
 
@@ -276,19 +245,11 @@ void ScalarConverter::detecter(t_helper parced, std::string copyString) {
 int ScalarConverter::convert(char *str) {
   if (!str) std::cout << "you can't pass in empty string" << std::endl;
 
-  if (isprint(str[0]) && strlen(str) == 1 && !isdigit(str[0])) {
-    int hrlper = static_cast<int>(str[0]);
-    std::ostringstream oss;
-    oss << hrlper;
-    std::string s = oss.str();
-  }
-
 
 
   std::string copyString(str);
   t_helper parced = typeTaker(copyString.c_str());
 
   detecter(parced, copyString);
-
   return 0;
 }
